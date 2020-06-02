@@ -2,6 +2,8 @@ import express, { request } from 'express';
 
 const app = express();
 
+app.use(express.json());
+
 const users = [
     "Thiago",
     "João",
@@ -10,9 +12,11 @@ const users = [
 ];
 
 app.get("/users", (request, response) => {
-    console.log("Listagem de usuários");
+    const search = String(request.query.search);
 
-    response.json(users);
+    const filteredUsers = search ? users.filter(user => user.includes(search)) : users;
+
+    return response.json(filteredUsers);
 });
 
 app.get("/users/:id", (request, response) => {
@@ -26,9 +30,13 @@ app.get("/users/:id", (request, response) => {
 })
 
 app.post("/users", (request, response) => {
+
+    const data = request.body;
+    console.log(data);
+    
     const user = {
-        name: "Thiago",
-        email: "1234@email.com.br"
+        name: data.name,
+        email: data.email,
     }; 
     return response.json(user);
 });
